@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { ClipboardList } from "lucide-react";
+import { Boxes } from "lucide-react";
+
 import { Link } from "react-router";
 import { ModeToggle } from "../mode-toggle";
 
@@ -8,19 +9,19 @@ const Navbar = () => {
     <nav className="max-w-7xl mx-auto h-16 flex items-center justify-between px-4 shadow-md rounded-b-2xl bg-white dark:bg-gray-900">
       {/* logo */}
       <div className="flex items-center gap-2">
-        <ClipboardList className="w-6 h-6 text-primary" />
+        <Boxes className="w-6 h-6 text-primary" />
         <span className="font-bold text-xl">
-          Task<span className="text-primary">Manager</span>
+          Minimal Library Management System
         </span>
       </div>
 
       {/* buttons */}
       <div className="flex gap-2">
-        <Link to="/tasks">
-          <Button variant="outline">Tasks</Button>
+        <Link to="/books">
+          <Button variant="outline">All Books</Button>
         </Link>
         <Link to="/users">
-          <Button>Users</Button>
+          <Button>Add Books</Button>
         </Link>
       <ModeToggle/>
 
