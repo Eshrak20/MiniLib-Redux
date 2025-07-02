@@ -15,6 +15,7 @@ interface EditModalProps<T> {
     name: string;
     label: string;
     type: string;
+    // readOnly: boolean;
   }[];
 
   title?: string;
@@ -55,6 +56,7 @@ const EditModal = <T,>({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <div className="space-y-2">
+          
           {fields.map((field) => (
             <Input
               key={field.name}
@@ -63,6 +65,7 @@ const EditModal = <T,>({
               value={(form[field.name as keyof T] as string) ?? ""}
               onChange={handleChange}
               type={field.type}
+              // readOnly={field.readOnly ?? false}
             />
           ))}
           <div className="flex justify-end gap-2 mt-4">

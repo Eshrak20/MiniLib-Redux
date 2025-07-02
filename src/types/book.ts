@@ -5,5 +5,15 @@ export interface Book {
   author: string;
   isbn: string;
   copies?: number;
-  availability?: string;
+  available?: boolean;
+}
+export interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: BookWithDates[];
+}
+
+interface BookWithDates extends Book {
+  createdAt: string;
+  updatedAt: string;
 }

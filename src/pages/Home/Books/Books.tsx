@@ -5,11 +5,13 @@ import type { Book } from "@/types/book";
 
 const Books = () => {
   const { data, isLoading, isError } = useGetAllBooksQuery(undefined);
+  
 
   if (isLoading) return <div>Loading books...</div>;
   if (isError) return <div>Something went wrong!</div>;
 
-  const books = data?.data || [];
+  const books = data || [];
+
 
   const handleDeleteConfirm = (data: Book) => {
     console.log("Delete confirmed for", data);
@@ -26,7 +28,8 @@ const Books = () => {
       <h1 className="text-2xl font-bold mb-4">Books</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {books.map((book: Book) => {
-          const { _id,available,createdAt, updatedAt, ...rest } = book; // destructure to remove them
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // const { available, ...rest } = book; // destructure to remove them
 
           return (
             <Card key={book._id}>
@@ -45,7 +48,7 @@ const Books = () => {
                   <strong>Copies:</strong> {book.copies ?? "N/A"}
                 </p>
                 <Action
-                  data={rest} // pass without createdAt/updatedAt
+                  data={book} // pass without createdAt/updatedAt
                   onDeleteConfirm={handleDeleteConfirm}
                   onEditSubmit={handleEditSubmit}
                   actions={[

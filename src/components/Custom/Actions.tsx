@@ -31,16 +31,18 @@ const Action = ({
   data,
   onDeleteConfirm,
   onEditSubmit,
-
 }: ActionProps) => {
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   // Dynamically generate fields from data keys
-  const fields = Object.keys(data).map((key) => ({
-    name: key,
-    label: key,
-    type: typeof data[key as keyof Book] === "string" ? "text" : "number", //* osthir ekta jinish banaysi auto input type
-  }));
+  const fields = Object.keys(data)
+    .filter((key) => key !== "_id" && key !== "available"  )
+    .map((key) => ({
+      name: key,
+      label: key,
+      type: typeof data[key as keyof Book] === "string" ? "text" : "number", //* osthir ekta jinish banaysi auto input type
+      // readOnly: key === "available"
+    }));
 
   const handleDeleteClick = () => setOpenDelete(true);
   const handleEditClick = () => setOpenEdit(true);
@@ -94,7 +96,7 @@ const Action = ({
       </AlertDialog>
 
       {/* Edit modal */}
-      
+
       <EditModal
         open={openEdit}
         onClose={() => setOpenEdit(false)}

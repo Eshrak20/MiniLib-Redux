@@ -1,3 +1,4 @@
+import type { ApiResponse } from "@/types/book";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const baseApi = createApi({
@@ -6,8 +7,12 @@ export const baseApi = createApi({
   endpoints: (builder) => ({
     getAllBooks: builder.query({
       query: () => "/books",
+      transformResponse: (response: ApiResponse) =>
+        response.data.map(
+          ({ createdAt: _createdAt, updatedAt: _updatedAt, ...rest }) => rest
+        ),
     }),
   }),
 });
 
-export const { useGetAllBooksQuery } = baseApi
+export const { useGetAllBooksQuery } = baseApi;
