@@ -14,7 +14,7 @@ const updateModel = async (updatedBook: Book): Promise<Book> => {
     if (!response.ok) {
       throw new Error("API request failed");
     }
-    const data: Book = await response.json();
+    const data = await response.json();
     return data.data;
   } catch (error) {
     console.error(error);

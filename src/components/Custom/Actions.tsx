@@ -11,20 +11,8 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import type { Book } from "@/types/book";
-import EditModal from "./EditModal";
-
-interface ActionProps {
-  actions: {
-    title?: string;
-    label: string;
-    variant: "default" | "destructive" | "outline";
-    onClick?: () => void;
-    type?: "edit" | "delete" | "custom";
-  }[];
-  data: Book;
-  onDeleteConfirm?: (data: Book) => void;
-  onEditSubmit?: (updatedData: Book) => void;
-}
+import EditModal from "./CustomModal";
+import type { ActionProps } from "@/types/ActionProps";
 
 const Action = ({
   actions,
@@ -36,7 +24,7 @@ const Action = ({
   const [openEdit, setOpenEdit] = useState(false);
   // Dynamically generate fields from data keys
   const fields = Object.keys(data)
-    .filter((key) => key !== "_id" && key !== "available"  )
+    .filter((key) => key !== "_id" && key !== "available")
     .map((key) => ({
       name: key,
       label: key,
@@ -46,9 +34,6 @@ const Action = ({
 
   const handleDeleteClick = () => setOpenDelete(true);
   const handleEditClick = () => setOpenEdit(true);
-  const handleCustomClick = (onClick?: () => void) => {
-    if (onClick) onClick();
-  };
 
   return (
     <>
@@ -61,7 +46,6 @@ const Action = ({
             onClick={() => {
               if (action.type === "delete") handleDeleteClick();
               else if (action.type === "edit") handleEditClick();
-              else handleCustomClick(action.onClick);
             }}
           >
             {action.label}
@@ -96,7 +80,6 @@ const Action = ({
       </AlertDialog>
 
       {/* Edit modal */}
-
       <EditModal
         open={openEdit}
         onClose={() => setOpenEdit(false)}
@@ -105,7 +88,7 @@ const Action = ({
           setOpenEdit(false);
         }}
         data={data}
-        fields={fields} // dynamically generated here
+        fields={fields} //* dynamically generated here
         title={actions[1].title}
       />
     </>

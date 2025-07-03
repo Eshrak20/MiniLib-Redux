@@ -3,8 +3,25 @@ import { Boxes } from "lucide-react";
 
 import { Link } from "react-router";
 import { ModeToggle } from "../mode-toggle";
+import CreateModal from "../Custom/CustomModal";
+import { useState } from "react";
+import { BookFieldsConfig } from "@/config/BookFieldsConfig";
+import type { Book } from "@/types/book";
+import { useCreateBookMutation } from "@/redux/api/bookApi";
 
 const Navbar = () => {
+  const [createBook] = useCreateBookMutation();
+
+  const [isOpen, setOpen] = useState(false);
+  const handleAddClick = () => setOpen(true);
+  const handleCreate = async (formData: Book) => {
+    console.log("Creating book with data:", formData);
+    try {
+      await createBook(formData).unwrap();
+    } catch (err) {
+      console.error("Creating failed", err);
+    }
+  };
   return (
     <nav className="max-w-7xl mx-auto h-16 flex items-center justify-between px-4 shadow-md rounded-b-2xl bg-white dark:bg-gray-900">
       {/* logo */}
@@ -20,11 +37,20 @@ const Navbar = () => {
         <Link to="/books">
           <Button variant="outline">All Books</Button>
         </Link>
-        <Link to="/users">
-          <Button>Add Books</Button>
-        </Link>
-      <ModeToggle/>
-
+        <Button
+          onClick={() => {
+            handleAddClick();
+          }}
+        >
+          Add Books{" "}
+        </Button>
+        <CreateModal
+          open={isOpen}
+          onClose={() => setOpen(false)}
+          onSubmit={handleCreate}
+          fields={BookFieldsConfig}
+        />
+        <ModeToggle />
       </div>
     </nav>
   );

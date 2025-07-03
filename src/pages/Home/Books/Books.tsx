@@ -1,13 +1,19 @@
 import Action from "@/components/Custom/Actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import deleteModel from "@/models/deleteModel";
-import updateModel from "@/models/updateModel";
-import { useGetAllBooksQuery } from "@/redux/api/baseApi";
+import {
+  useGetAllBooksQuery,
+  useUpdateBookMutation,
+  useDeleteBookMutation,
+} from "@/redux/api/bookApi";
 import type { Book } from "@/types/book";
 import { useEffect, useState } from "react";
 
 const Books = () => {
-  const { data, isLoading, isError} = useGetAllBooksQuery(undefined);
+  const { data, isLoading, isError } = useGetAllBooksQuery(undefined);
+
+  const [updateBook] = useUpdateBookMutation();
+  const [deleteBook] = useDeleteBookMutation();
+
   const [books, setBooks] = useState<Book[]>([]);
   useEffect(() => {
     if (data) {
@@ -15,15 +21,12 @@ const Books = () => {
     }
   }, [data]);
 
-  if (isLoading) return <div>Loading books...</div>;
-  if (isError) return <div>Something went wrong!</div>;
-
-  const handleDeleteConfirm = async (deleteBook: Book) => {
+  const handleDeleteConfirm = async (book: Book) => {
     try {
-      await deleteModel(deleteBook);
-      setBooks((prevBooks) =>
-        prevBooks.filter((book) => book._id !== deleteBook._id)
-      );
+      await deleteBook(book._id).unwrap();
+      // setBooks((prevBooks) =>
+      //   prevBooks.filter((b) => b._id !== book._id)
+      // );
     } catch (error) {
       console.error("Error updating data:", error);
     }
@@ -31,16 +34,16 @@ const Books = () => {
 
   const handleEditSubmit = async (updatedBook: Book) => {
     try {
-      const getUpdatedBook = await updateModel(updatedBook);
-      setBooks((prevBooks) =>
-        prevBooks.map((book) =>
-          book._id === getUpdatedBook._id ? getUpdatedBook : book
-        )
-      );
-    } catch (error) {
-      console.error("Error updating data:", error);
+      await updateBook(updatedBook).unwrap();
+      //   setBooks((prev) =>
+      //     prev.map((b) => (b._id === result._id ? result : b))
+      // );
+    } catch (err) {
+      console.error("Update failed", err);
     }
   };
+  if (isLoading) return <div>Loading books...</div>;
+  if (isError) return <div>Something went wrong!</div>;
 
   return (
     <div className="container mx-auto p-4">
