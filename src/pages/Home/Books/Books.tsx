@@ -1,26 +1,37 @@
 import Action from "@/components/Custom/Actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import updateModel from "@/models/updateModel";
 import { useGetAllBooksQuery } from "@/redux/api/baseApi";
 import type { Book } from "@/types/book";
+import { useEffect, useState } from "react";
 
 const Books = () => {
   const { data, isLoading, isError } = useGetAllBooksQuery(undefined);
-  
+  const [books, setBooks] = useState<Book[]>([]);
+  useEffect(() => {
+    if (data) {
+      setBooks(data);
+    }
+  }, [data]);
 
   if (isLoading) return <div>Loading books...</div>;
   if (isError) return <div>Something went wrong!</div>;
 
-  const books = data || [];
-
-
   const handleDeleteConfirm = (data: Book) => {
     console.log("Delete confirmed for", data);
-    // call your API delete here
   };
 
-  const handleEditSubmit = (updatedBook: Book) => {
-    console.log("Edit submitted", updatedBook);
-    // call your API update here
+  const handleEditSubmit = async (updatedBook: Book) => {
+    try {
+      const getUpdatedBook = await updateModel(updatedBook);
+      setBooks((prev) =>
+        prev.map((book) =>
+          book._id === getUpdatedBook._id ? getUpdatedBook : book
+        )
+      );
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
   };
 
   return (
@@ -28,9 +39,6 @@ const Books = () => {
       <h1 className="text-2xl font-bold mb-4">Books</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {books.map((book: Book) => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          // const { available, ...rest } = book; // destructure to remove them
-
           return (
             <Card key={book._id}>
               <CardHeader>
@@ -47,6 +55,12 @@ const Books = () => {
                 <p>
                   <strong>Copies:</strong> {book.copies ?? "N/A"}
                 </p>
+                <p>
+                  <strong>
+                    {book.available ? "available" : "unavailable"}
+                  </strong>
+                </p>
+
                 <Action
                   data={book} // pass without createdAt/updatedAt
                   onDeleteConfirm={handleDeleteConfirm}
