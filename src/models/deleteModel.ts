@@ -1,9 +1,12 @@
-const updateModel = async (deleteBook) => {
+import type { Book } from "@/types/book";
+
+const deleteModel = async (deleteBook: Book) => {
+  console.log(deleteBook);
   try {
     const response = await fetch(
       `http://localhost:5000/api/books/${deleteBook._id}`,
       {
-        method: "POST",
+        method: "DELETE",
       }
     );
     if (!response.ok) {
@@ -15,4 +18,4 @@ const updateModel = async (deleteBook) => {
   }
 };
 
-export default updateModel;
+export default deleteModel;
