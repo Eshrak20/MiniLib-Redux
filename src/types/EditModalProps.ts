@@ -5,6 +5,7 @@ export interface EditModalProps<T> {
     name: string;
     label: string;
     type: string;
+
     options?: [
       "FICTION",
       "NON_FICTION",

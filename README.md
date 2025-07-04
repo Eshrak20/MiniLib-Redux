@@ -51,3 +51,14 @@ Some Question for support session
     defaultForm[field.name as keyof T] = true as unknown as T[keyof T];
 
 9.  Book.tsx er 125 number line
+
+10. => Promise<void> | void
+→ This means the function can either:
+
+finish immediately and return void (no value)
+
+or return a Promise<void> if it wants to do something asynchronous (like saving to a server)
+
+onSubmit: (data: Partial<T>) => Promise<void> | void
+
+👉 “onSubmit is a function taking partial data of type T, and can run either synchronously or asynchronously.”

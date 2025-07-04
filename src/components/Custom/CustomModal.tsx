@@ -40,7 +40,9 @@ const CustomModal = <T,>({
       const defaultForm: Partial<T> = {};
       fields.forEach((field) => {
         if (field.type === "checkbox") {
-          defaultForm[field.name as keyof T] = true as any;
+          if (typeof field.name === "string") {
+            (defaultForm as Record<string, unknown>)[field.name] = true;
+          }
         }
       });
       setForm(defaultForm);
@@ -59,7 +61,6 @@ const CustomModal = <T,>({
   };
 
   const handleSubmit = () => {
-    // required field validation
     for (const field of fields) {
       if (field.name === "createdAt" || field.name === "updatedAt") continue;
 
@@ -82,21 +83,39 @@ const CustomModal = <T,>({
         }
       }
     }
-
-    // all checks passed
     setValidationError(null);
     onSubmit(form);
     onClose();
 
-    if (
-      isBorrow &&
-      data &&
-      data.copies !== undefined &&
-      typeof data.copies === "number" &&
-      form["quantity"] !== undefined &&
-      data.copies > Number(form["quantity"])
-    ) {
-      navigate("/borrowed-books");
+    if (isBorrow) {
+      if (data) {
+        if ("copies" in data && "quantity" in form) {
+          if (
+            typeof data.copies === "number" &&
+            typeof form["quantity"] === "number"
+          ) {
+            if (form["quantity"] !== undefined) {
+              if (data.copies > Number(form["quantity"])) {
+                navigate("/borrowed-books");
+              } else {
+                console.log(
+                  "Not enough copies available or quantity exceeds available copies"
+                );
+              }
+            } else {
+              console.log("Form quantity is missing");
+            }
+          } else {
+            console.log("data.copies is not a number");
+          }
+        } else {
+          console.log("'copies' property not found in data");
+        }
+      } else {
+        console.log("Data is missing");
+      }
+    } else {
+      console.log("Not a borrow action");
     }
   };
 

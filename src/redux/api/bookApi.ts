@@ -8,19 +8,19 @@ import { baseApi } from "./baseApi";
 export const bookApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllBooks: builder.query<Book[], void>({
-      query: () => "books",
+      query: () => "/books",
       transformResponse: (response: BookListApiResponse) => response.data,
       providesTags: ["Boi"],
     }),
 
     getSingleBook: builder.query<Book, string>({
-      query: (id) => `books/${id}`,
+      query: (id) => `/books/${id}`,
       transformResponse: (response: SingleBookApiResponse) => response.data,
     }),
 
     createBook: builder.mutation<SingleBookApiResponse, Book>({
       query: (book) => ({
-        url: `books`, // correct path
+        url: `/books`, // correct path
         method: "POST",
         body: book,
       }),
