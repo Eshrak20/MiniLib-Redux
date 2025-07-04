@@ -5,7 +5,7 @@ export type Borrow = {
   quantity: number;
   dueDate: string;
   onSubmit: () => void;
-  
+
 };
 
 export type BorrowResponse = ApiResponse<Borrow>;

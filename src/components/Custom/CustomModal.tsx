@@ -30,27 +30,72 @@ const CustomModal = <T,>({
   error,
 }: EditModalProps<T>) => {
   const [form, setForm] = useState<Partial<T>>({});
+  const [validationError, setValidationError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (data) {
       setForm(data);
     } else {
-      setForm({});
+      const defaultForm: Partial<T> = {};
+      fields.forEach((field) => {
+        if (field.type === "checkbox") {
+          defaultForm[field.name as keyof T] = true as any;
+        }
+      });
+      setForm(defaultForm);
     }
-  }, [data, open]);
+    setValidationError(null);
+  }, [data, open, fields]);
 
   const isBorrow = title?.startsWith("Borrow:");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "number" ? Number(value) : value,
+    }));
   };
 
   const handleSubmit = () => {
+    // required field validation
+    for (const field of fields) {
+      if (field.name === "createdAt" || field.name === "updatedAt") continue;
+
+      const fieldValue = form[field.name as keyof T];
+
+      if (
+        fieldValue === undefined ||
+        fieldValue === null ||
+        fieldValue === "" ||
+        (field.type === "checkbox" && fieldValue === false)
+      ) {
+        setValidationError(`${field.label} is required.`);
+        return;
+      }
+
+      if (field.type === "number" && typeof fieldValue === "number") {
+        if (fieldValue < 0) {
+          setValidationError(`${field.label} must be greater than 0.`);
+          return;
+        }
+      }
+    }
+
+    // all checks passed
+    setValidationError(null);
     onSubmit(form);
     onClose();
-    if (isBorrow) {
+
+    if (
+      isBorrow &&
+      data &&
+      data.copies !== undefined &&
+      typeof data.copies === "number" &&
+      form["quantity"] !== undefined &&
+      data.copies > Number(form["quantity"])
+    ) {
       navigate("/borrowed-books");
     }
   };
@@ -62,9 +107,15 @@ const CustomModal = <T,>({
           <DialogTitle>{title ?? (data ? "Edit" : "Create")}</DialogTitle>
         </DialogHeader>
         {error && (
-          <Alert variant="destructive" className="mb-4">
-            <AlertTitle>Please Try Again there</AlertTitle>
+          <Alert variant="destructive" className="mb-2">
+            <AlertTitle>Server Error</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        {validationError && (
+          <Alert variant="destructive" className="mb-2">
+            <AlertTitle>Validation Error</AlertTitle>
+            <AlertDescription>{validationError}</AlertDescription>
           </Alert>
         )}
         <div className="space-y-4">
@@ -79,9 +130,7 @@ const CustomModal = <T,>({
                   <div key={field.name} className="flex items-center space-x-2">
                     <Checkbox
                       id={field.name}
-                      checked={
-                        (form[field.name as keyof T] as boolean) ?? false
-                      }
+                      checked={(form[field.name as keyof T] as boolean) ?? true}
                       onCheckedChange={(checked) =>
                         setForm((prev) => ({
                           ...prev,
