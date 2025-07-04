@@ -3,6 +3,7 @@ import { useCreateBorrowMutation } from "@/redux/api/borrowApi";
 import type { Book } from "@/types/Book";
 import type { Borrow } from "@/types/Borrow";
 import { FC } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
   open: boolean;
@@ -20,46 +21,50 @@ const BorrowModalWrapper: FC<Props> = ({ open, onClose, selectedBook }) => {
     dueDate: string;
   }) => {
     if (borrowFormData.quantity > (selectedBook.copies ?? 0)) {
-      alert(
+      toast.error(
         `Cannot borrow more than available copies. Available: ${selectedBook.copies}`
       );
       return;
     }
+
     const borrowPayload: Borrow = {
       book: selectedBook._id,
       quantity: borrowFormData.quantity,
       dueDate: borrowFormData.dueDate,
     };
+
     try {
       await borrowBook(borrowPayload).unwrap();
-      alert("Borrow successful!");
+      toast.success("Borrow successful!");
       onClose();
     } catch (err) {
       console.error("Borrow failed", err);
-      alert("Something went wrong");
+      toast.error("Something went wrong while borrowing the book.");
     }
   };
 
   return (
-    <BorrowModal
-      open={open}
-      onClose={onClose}
-      onSubmit={handleSubmit}
-      data={selectedBook}
-      fields={[
-        {
-          name: "quantity",
-          label: "Quantity",
-          type: "number",
-        },
-        {
-          name: "dueDate",
-          label: "Due Date",
-          type: "date",
-        },
-      ]}
-      title={`Borrow: ${selectedBook.title}`}
-    />
+    <>
+      <BorrowModal
+        open={open}
+        onClose={onClose}
+        onSubmit={handleSubmit}
+        data={selectedBook}
+        fields={[
+          {
+            name: "quantity",
+            label: "Quantity",
+            type: "number",
+          },
+          {
+            name: "dueDate",
+            label: "Due Date",
+            type: "date",
+          },
+        ]}
+        title={`Borrow: ${selectedBook.title}`}
+      />
+    </>
   );
 };
 

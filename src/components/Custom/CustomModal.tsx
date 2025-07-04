@@ -177,6 +177,11 @@ const CustomModal = <T,>({
                       value={(form[field.name as keyof T] as string) ?? ""}
                       onChange={handleChange}
                       type={field.type}
+                      className={
+                        field.type === "date"
+                          ? "dark:bg-white dark:text-black"
+                          : ""
+                      }
                     />
                   </div>
                 );
