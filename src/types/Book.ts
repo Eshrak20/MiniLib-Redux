@@ -1,3 +1,5 @@
+import type { ApiResponse } from "./ApiResponse";
+
 export interface Book {
   _id: string;
   title: string;
@@ -12,4 +14,10 @@ export interface Book {
   isbn: string;
   copies?: number;
   available?: boolean;
+  description: string;
 }
+
+
+
+export type SingleBookApiResponse = ApiResponse<Book>;
+export type BookListApiResponse = ApiResponse<Book[]>;

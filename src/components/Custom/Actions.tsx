@@ -10,10 +10,10 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import type { Book } from "@/types/book";
+import type { Book } from "@/types/Book";
 import EditModal from "./CustomModal";
 import type { ActionProps } from "@/types/ActionProps";
-
+import { useNavigate } from "react-router";
 const Action = ({
   actions,
   data,
@@ -32,9 +32,10 @@ const Action = ({
       // readOnly: key === "available"
     }));
 
+  const navigate = useNavigate();
   const handleDeleteClick = () => setOpenDelete(true);
   const handleEditClick = () => setOpenEdit(true);
-
+  const handleViewClick = () => navigate(`/single-book/${data._id}`);
   return (
     <>
       <div className="flex gap-2 mt-2">
@@ -46,6 +47,7 @@ const Action = ({
             onClick={() => {
               if (action.type === "delete") handleDeleteClick();
               else if (action.type === "edit") handleEditClick();
+              else if (action.type === "view") handleViewClick();
             }}
           >
             {action.label}

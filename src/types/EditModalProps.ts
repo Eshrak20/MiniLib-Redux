@@ -1,6 +1,6 @@
 export interface EditModalProps<T> {
   open: boolean;
-  data: T | null;
+  data?: Partial<T>;
   fields: {
     name: string;
     label: string;
@@ -16,6 +16,7 @@ export interface EditModalProps<T> {
   }[];
 
   title?: string;
+  error?: string;
   onClose: () => void;
-  onSubmit: (updatedData: Partial<T>) => void;
+  onSubmit: (data: Partial<T>) => Promise<void> | void;
 }

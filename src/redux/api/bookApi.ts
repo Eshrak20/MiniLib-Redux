@@ -1,27 +1,33 @@
-import type { ApiResponse } from "@/types/ApiResponse";
-import type { Book } from "@/types/book";
+import type {
+  Book,
+  BookListApiResponse,
+  SingleBookApiResponse,
+} from "@/types/Book";
 import { baseApi } from "./baseApi";
 
 export const bookApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllBooks: builder.query<Book[], void>({
       query: () => "books",
-      transformResponse: (response: ApiResponse) =>
-        response.data.map(
-          ({ createdAt: _createdAt, updatedAt: _updatedAt, ...rest }) => rest
-        ),
+      transformResponse: (response: BookListApiResponse) => response.data,
       providesTags: ["Boi"],
     }),
-    createBook: builder.mutation<Book, Book>({
+
+    getSingleBook: builder.query<Book, string>({
+      query: (id) => `books/${id}`,
+      transformResponse: (response: SingleBookApiResponse) => response.data,
+    }),
+
+    createBook: builder.mutation<SingleBookApiResponse, Book>({
       query: (book) => ({
-        url: `/books`, // correct path
+        url: `books`, // correct path
         method: "POST",
         body: book,
       }),
       invalidatesTags: ["Boi"], // consistent with tagTypes
     }),
 
-    updateBook: builder.mutation<Book, Book>({
+    updateBook: builder.mutation<SingleBookApiResponse, Book>({
       query: (book) => ({
         url: `books/${book._id}`,
         method: "PUT",
@@ -41,6 +47,7 @@ export const bookApi = baseApi.injectEndpoints({
 
 export const {
   useGetAllBooksQuery,
+  useGetSingleBookQuery,
   useUpdateBookMutation,
   useDeleteBookMutation,
   useCreateBookMutation,

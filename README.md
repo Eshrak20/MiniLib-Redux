@@ -5,7 +5,8 @@ npm run dev -- --force
 https://github.com/Apollo-Level2-Web-Dev/B5A4 
 https://docs.google.com/document/d/13WSmmTHvOLYWPVXJlmFGalnCXcF60D6omjk-a1xTW-c/edit?tab=t.0
 
-
+Update more 
+when edit then genre will show as a list
 Some Question for support session
 1.
 { ... }[]

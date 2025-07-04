@@ -6,7 +6,7 @@ import { ModeToggle } from "../mode-toggle";
 import CreateModal from "../Custom/CustomModal";
 import { useState } from "react";
 import { BookFieldsConfig } from "@/config/BookFieldsConfig";
-import type { Book } from "@/types/book";
+import type { Book } from "@/types/Book";
 import { useCreateBookMutation } from "@/redux/api/bookApi";
 
 const Navbar = () => {
@@ -36,6 +36,9 @@ const Navbar = () => {
       <div className="flex gap-2">
         <Link to="/books">
           <Button variant="outline">All Books</Button>
+        </Link>
+        <Link to="/borrowed-books">
+          <Button variant="outline">All Borrowed Books</Button>
         </Link>
         <Button
           onClick={() => {
