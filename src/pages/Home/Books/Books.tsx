@@ -25,6 +25,7 @@ import {
 import type { Book } from "@/types/Book";
 import BorrowModalWrapper from "./BorrowModalWrapper";
 import Loading from "@/components/Custom/Loading";
+import { Link } from "react-router";
 
 // const defaultCover = `data:image/svg+xml;utf8,
 // <svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'>
@@ -44,12 +45,14 @@ const Books = ({ isHome }: { isHome: boolean }) => {
   const { data, isLoading, isError } = useGetAllBooksQuery(undefined);
   const [updateBook] = useUpdateBookMutation();
   const [deleteBook] = useDeleteBookMutation();
-  if (!isHome) {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }
+  useEffect(() => {
+    if (!isHome) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [isHome]);
 
   const [books, setBooks] = useState<Book[]>([]);
   const [borrowModalOpen, setBorrowModalOpen] = useState(false);
@@ -153,20 +156,22 @@ const Books = ({ isHome }: { isHome: boolean }) => {
                   </div>
 
                   {/* Book cover with gradient overlay */}
-                  <div className="relative overflow-hidden h-56 ">
-                    <div
-                      className="w-full h-full bg-cover bg-center transition-transform duration-300
+                  <Link to={`/single-book/${book._id}`}>
+                    <div className="relative overflow-hidden h-56 ">
+                      <div
+                        className="w-full h-full bg-cover bg-center transition-transform duration-300
     bg-[url('/Pics/whiteMode.png')] dark:bg-[url('/Pics/darkMode.jpeg')]"
-                      role="img"
-                      aria-label={`Cover of ${book.title}`}
-                    ></div>
+                        role="img"
+                        aria-label={`Cover of ${book.title}`}
+                      ></div>
 
-                    {/* <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" /> */}
-                  </div>
+                      {/* <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" /> */}
+                    </div>
+                  </Link>
 
                   <CardHeader className="pb-2 px-4 pt-4">
                     <CardTitle className="text-lg font-bold line-clamp-2">
-                      {book.title}
+                      <Link to={`/single-book/${book._id}`}>{book.title}</Link>
                     </CardTitle>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-blue-600 font-medium flex items-center gap-1">

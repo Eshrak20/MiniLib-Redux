@@ -12,11 +12,15 @@ import {
   BookX,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useEffect } from "react";
 
 const SingleBook = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   });
   const { id } = useParams();
   const { data, isLoading, isError } = useGetSingleBookQuery(id!);

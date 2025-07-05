@@ -15,12 +15,15 @@ import {
 import { ToastContainer } from "react-toastify";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect } from "react";
 
 const BorrowSummary = () => {
   const { data, isLoading, isError } = useGetAllBorrowedBooksQuery();
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   });
   if (isLoading) {
     return (
