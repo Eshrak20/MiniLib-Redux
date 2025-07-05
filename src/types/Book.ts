@@ -14,6 +14,7 @@ export interface Book {
   isbn: string;
   copies?: number;
   available?: boolean;
+  createdAt?: Date;
   description: string;
 }
 

@@ -18,7 +18,7 @@ const Banner = () => {
     <div className="relative h-[90vh] w-full rounded-xl overflow-hidden shadow-xl">
       {/* Background image with parallax */}
       <img
-        src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1500&q=80"
+        src="/Pics/Banner1.avif"
         alt="Library Banner"
         className="object-cover w-full h-[110%]"
         style={{

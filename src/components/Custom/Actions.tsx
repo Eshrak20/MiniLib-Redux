@@ -10,10 +10,10 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import type { Book } from "@/types/Book";
 import EditModal from "./CustomModal";
 import type { ActionProps } from "@/types/ActionProps";
 import { useNavigate } from "react-router";
+import { BookFieldsConfig } from "@/config/BookFieldsConfig";
 const Action = ({
   actions,
   data,
@@ -22,16 +22,6 @@ const Action = ({
 }: ActionProps) => {
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  // Dynamically generate fields from data keys
-  const fields = Object.keys(data)
-    .filter((key) => key !== "_id" && key !== "available")
-    .map((key) => ({
-      name: key,
-      label: key,
-      type: typeof data[key as keyof Book] === "string" ? "text" : "number", //* osthir ekta jinish banaysi auto input type
-      // readOnly: key === "available"
-    }));
-
   const navigate = useNavigate();
   const handleDeleteClick = () => setOpenDelete(true);
   const handleEditClick = () => setOpenEdit(true);
@@ -43,19 +33,16 @@ const Action = ({
           <Button
             key={index}
             size="sm"
-            variant={action.variant}
             onClick={() => {
               if (action.type === "delete") handleDeleteClick();
               else if (action.type === "edit") handleEditClick();
               else if (action.type === "view") handleViewClick();
             }}
           >
-            {action.label}
+            {action.icon}
           </Button>
         ))}
       </div>
-
-      {/* Delete dialog */}
       <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -81,7 +68,6 @@ const Action = ({
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Edit modal */}
       <EditModal
         open={openEdit}
         onClose={() => setOpenEdit(false)}
@@ -90,7 +76,7 @@ const Action = ({
           setOpenEdit(false);
         }}
         data={data}
-        fields={fields} //* dynamically generated here
+        fields={BookFieldsConfig}
         title={actions[1].title}
       />
     </>

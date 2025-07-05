@@ -1,12 +1,15 @@
 import type { ApiResponse } from "./ApiResponse";
-
-export type Borrow = {
-  book: string;
+interface Book {
+  title: string;
+  isbn: string;
+}
+export type BorrowPayload = {
+  book: Book | string;
   quantity: number;
-  dueDate: string;
-  onSubmit: () => void;
-
+  dueDate: string | Date;
+  totalQuantity: number;
+  // onSubmit: () => void;
 };
 
-export type BorrowResponse = ApiResponse<Borrow>;
-export type BorrowListResponse = ApiResponse<Borrow[]>;
+export type BorrowResponse = ApiResponse<BorrowPayload>;
+export type BorrowListResponse = ApiResponse<BorrowPayload[]>;

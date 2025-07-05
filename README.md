@@ -1,64 +1,97 @@
+# 📚 Redux  App
+
+A modern React + TypeScript project demonstrating Redux Toolkit, Vite, Tailwind, and Radix UI integrations for managing a book library with borrowing functionality.  
+
+---
+
+## 🚀 Features
+
+- Vite-powered blazing-fast dev server  
+- React 19 with TypeScript  
+- Redux Toolkit state management  
+- React Router 7 for routing  
+- Radix UI for accessible UI primitives  
+- Tailwind CSS for styling  
+- Framer Motion for smooth animations  
+- Custom modal components with advanced TypeScript generics  
+- Borrow/return book logic with quantity validation  
+- ISBN uniqueness enforced  
+- Toast notifications  
+- Responsive navbar and date picker  
+- RTK Query for simplified data fetching
+
+---
+
+## 📂 Project Structure
+
+src/
+components/
+...
+pages/
+...
+hooks/
+...
+store/
+...
+types/
+...
+App.tsx
+main.tsx
+---
+
+## ⚙️ Scripts
+
+| Command               | Description                                     |
+|-----------------------|-------------------------------------------------|
+| `npm run dev`         | Start development server with Vite              |
+| `npm run build`       | Type-check and build for production             |
+| `npm run lint`        | Run ESLint for code quality                     |
+| `npm run preview`     | Preview the production build locally            |
+
+---
+
+## 🧩 Tech Stack
+
+- **React 19**
+- **Redux Toolkit 2.8**
+- **React Router 7**
+- **Tailwind CSS 4**
+- **Radix UI**  
+- **Framer Motion**
+- **TypeScript 5**
+- **RTK Query** for data fetching
+
+---
+
+## 📝 Developer Notes
+
+✅ Clean `node_modules/.vite` if issues appear:
+```bash
 rm -rf node_modules/.vite
 
-npm run dev -- --force
 
-https://github.com/Apollo-Level2-Web-Dev/B5A4
-https://docs.google.com/document/d/13WSmmTHvOLYWPVXJlmFGalnCXcF60D6omjk-a1xTW-c/edit?tab=t.0
+## 🛠️ Support Notes
 
-Update more
-ISBN should not same !
-Some Question for support session
+> Quick reference for the support session:
 
-1.  { ... }[]
-    [{ ... }] what is the different of them
+---
 
-2.  What is Partial<T>?
+- **`{ ... }[]` vs `[ { ... } ]`**  
+  - `{ ... }[]` → an array of objects of a given type  
+  - `[ { ... } ]` → a literal array with one object
 
-3.  What is Object.keys
+---
 
-4.  return data.data;
-    Property 'data' does not exist on type 'Book'.ts(2339)
-    any
+- **Partial<T>**  
+  Makes all properties of type `T` optional.
 
-5.  onChange={handleChange} fixed
+---
 
-6.  url: `/books/${book._id}`, why it works is it should without slash url: `books/${book._id}`,
+- **Object.keys**  
+  Returns an array of property names (keys) from an object.
 
-7.  if (
-    isBorrow &&
-    data &&
-    data.copies !== undefined &&
-    typeof data.copies === "number" &&
-    form["quantity"] !== undefined &&
-    data.copies > Number(form["quantity"])
-    ) {
-    navigate("/borrowed-books");
-    }
+---
 
-    customModal er 92 line
-    if (
-    isBorrow &&
-    (data && "copies" in data && typeof (data as { copies: number }).copies === "number") &&
-    (form["quantity" as keyof T] !== undefined) &&
-    ((data as { copies: number }).copies > Number(form["quantity" as keyof T]))
-    ) {
-    navigate("/borrowed-books");
-    }
-
-8.  defaultForm[field.name as keyof T] = true as any;
-
-    customModal er 45 line
-    defaultForm[field.name as keyof T] = true as unknown as T[keyof T];
-
-9.  Book.tsx er 125 number line
-
-10. => Promise<void> | void
-→ This means the function can either:
-
-finish immediately and return void (no value)
-
-or return a Promise<void> if it wants to do something asynchronous (like saving to a server)
-
-onSubmit: (data: Partial<T>) => Promise<void> | void
-
-👉 “onSubmit is a function taking partial data of type T, and can run either synchronously or asynchronously.”
+- **Type Error Example**  
+  ```ts
+  return data.data;

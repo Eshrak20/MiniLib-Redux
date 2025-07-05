@@ -20,11 +20,11 @@ export const bookApi = baseApi.injectEndpoints({
 
     createBook: builder.mutation<SingleBookApiResponse, Book>({
       query: (book) => ({
-        url: `/books`, // correct path
+        url: `/books`,
         method: "POST",
         body: book,
       }),
-      invalidatesTags: ["Boi"], // consistent with tagTypes
+      invalidatesTags: ["Boi"],
     }),
 
     updateBook: builder.mutation<SingleBookApiResponse, Book>({

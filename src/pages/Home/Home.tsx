@@ -6,8 +6,8 @@ const Home = () => {
   return (
     <div>
       <Banner/>
+      <Books isHome={true} />
       <About/>
-      <Books />
     </div>
   );
 };

@@ -12,10 +12,19 @@ export const BookFieldsConfig = [
       "HISTORY",
       "BIOGRAPHY",
       "FANTASY",
+    ] as [
+      "FICTION",
+      "NON_FICTION",
+      "SCIENCE",
+      "HISTORY",
+      "BIOGRAPHY",
+      "FANTASY"
     ],
   },
+
   { name: "isbn", label: "ISBN", type: "text" },
   { name: "description", label: "Description", type: "text" },
   { name: "copies", label: "Copies", type: "number" },
   { name: "available", label: "Available", type: "checkbox" },
 ];
+

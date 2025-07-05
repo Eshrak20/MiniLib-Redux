@@ -31,8 +31,7 @@ const CustomModal = <T,>({
 }: EditModalProps<T>) => {
   const [form, setForm] = useState<Partial<T>>({});
   const [validationError, setValidationError] = useState<string | null>(null);
-  const navigate = useNavigate();
-
+  console.log(error);
   useEffect(() => {
     if (data) {
       setForm(data);
@@ -49,6 +48,7 @@ const CustomModal = <T,>({
     }
     setValidationError(null);
   }, [data, open, fields]);
+  const navigate = useNavigate();
 
   const isBorrow = title?.startsWith("Borrow:");
 
@@ -75,48 +75,28 @@ const CustomModal = <T,>({
         setValidationError(`${field.label} is required.`);
         return;
       }
-
-      if (field.type === "number" && typeof fieldValue === "number") {
-        if (fieldValue < 0) {
-          setValidationError(`${field.label} must be greater than 0.`);
-          return;
+      if (isBorrow) {
+        if (field.type === "number" && typeof fieldValue === "number") {
+          if (fieldValue <= 0) {
+            setValidationError(`${field.label} must be greater than 0.`);
+            return;
+          }
+        }
+      } else {
+        if (field.type === "number" && typeof fieldValue === "number") {
+          if (fieldValue < 0) {
+            setValidationError(`${field.label} must be greater than 0.`);
+            return;
+          }
         }
       }
+    }
+    if (isBorrow) {
+      navigate("/borrowed-books");
     }
     setValidationError(null);
     onSubmit(form);
     onClose();
-
-    if (isBorrow) {
-      if (data) {
-        if ("copies" in data && "quantity" in form) {
-          if (
-            typeof data.copies === "number" &&
-            typeof form["quantity"] === "number"
-          ) {
-            if (form["quantity"] !== undefined) {
-              if (data.copies > Number(form["quantity"])) {
-                navigate("/borrowed-books");
-              } else {
-                console.log(
-                  "Not enough copies available or quantity exceeds available copies"
-                );
-              }
-            } else {
-              console.log("Form quantity is missing");
-            }
-          } else {
-            console.log("data.copies is not a number");
-          }
-        } else {
-          console.log("'copies' property not found in data");
-        }
-      } else {
-        console.log("Data is missing");
-      }
-    } else {
-      console.log("Not a borrow action");
-    }
   };
 
   return (
@@ -137,85 +117,84 @@ const CustomModal = <T,>({
             <AlertDescription>{validationError}</AlertDescription>
           </Alert>
         )}
-        <div className="space-y-4">
-          {fields
-            .filter(
-              (field) =>
-                field.name !== "createdAt" && field.name !== "updatedAt"
-            )
-            .map((field) => {
-              if (field.type === "checkbox") {
-                return (
-                  <div key={field.name} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={field.name}
-                      checked={(form[field.name as keyof T] as boolean) ?? true}
-                      onCheckedChange={(checked) =>
-                        setForm((prev) => ({
-                          ...prev,
-                          [field.name]: !!checked,
-                        }))
-                      }
-                    />
-                    <Label htmlFor={field.name}>{field.label}</Label>
-                  </div>
-                );
-              } else if (field.type === "select" && field.options) {
-                return (
-                  <div key={field.name} className="space-y-1">
-                    <Select
-                      onValueChange={(value) =>
-                        setForm((prev) => ({
-                          ...prev,
-                          [field.name]: value,
-                        }))
-                      }
-                      defaultValue={
-                        (form[field.name as keyof T] as string) ?? ""
-                      }
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder={`Select ${field.label}`} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {field.options.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                );
-              } else {
-                return (
-                  <div key={field.name} className="space-y-1">
-                    <Input
-                      name={field.name}
-                      placeholder={field.label}
-                      value={(form[field.name as keyof T] as string) ?? ""}
-                      onChange={handleChange}
-                      type={field.type}
-                      className={
-                        field.type === "date"
-                          ? "dark:bg-white dark:text-black"
-                          : ""
-                      }
-                    />
-                  </div>
-                );
-              }
-            })}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault(); // prevents default page reload
+            handleSubmit();
+          }}
+          className="space-y-4"
+        >
+          {fields.map((field) => {
+            if (field.type === "checkbox") {
+              return (
+                <div key={field.name} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={field.name}
+                    checked={(form[field.name as keyof T] as boolean) ?? true}
+                    onCheckedChange={(checked) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        [field.name]: !!checked,
+                      }))
+                    }
+                  />
+                  <Label htmlFor={field.name}>{field.label}</Label>
+                </div>
+              );
+            } else if (field.type === "select" && field.options) {
+              return (
+                <div key={field.name} className="space-y-1">
+                  <Select
+                    onValueChange={(value) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        [field.name]: value,
+                      }))
+                    }
+                    defaultValue={(form[field.name as keyof T] as string) ?? ""}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder={`Select ${field.label}`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {field.options.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              );
+            } else {
+              return (
+                <div key={field.name} className="space-y-1">
+                  <Input
+                    name={field.name}
+                    placeholder={field.label}
+                    value={(form[field.name as keyof T] as string) ?? ""}
+                    onChange={handleChange}
+                    type={field.type}
+                    className={
+                      field.type === "date"
+                        ? "dark:bg-white dark:text-black"
+                        : ""
+                    }
+                  />
+                </div>
+              );
+            }
+          })}
 
           <div className="flex justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button onClick={handleSubmit}>
+            <Button type="submit">
               {isBorrow ? "Borrow Book" : data ? "Update" : "Create"}
             </Button>
           </div>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

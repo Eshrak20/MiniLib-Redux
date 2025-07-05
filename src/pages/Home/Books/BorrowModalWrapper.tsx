@@ -1,36 +1,40 @@
 import BorrowModal from "@/components/Custom/CustomModal";
 import { useCreateBorrowMutation } from "@/redux/api/borrowApi";
-import type { Book } from "@/types/Book";
-import type { Borrow } from "@/types/Borrow";
-import { FC } from "react";
+import type { Props } from "@/types/Props";
 import { toast } from "react-toastify";
-
-interface Props {
-  open: boolean;
-  onClose: () => void;
-  selectedBook: Book | null;
-}
+import type { FC } from "react"; //* this FC is a type only
+import type { BorrowPayload } from "@/types/Borrow";
+import { useNavigate } from "react-router";
 
 const BorrowModalWrapper: FC<Props> = ({ open, onClose, selectedBook }) => {
   const [borrowBook] = useCreateBorrowMutation();
+  const navigate = useNavigate();
 
   if (!selectedBook) return null;
 
-  const handleSubmit = async (borrowFormData: {
-    quantity: number;
-    dueDate: string;
-  }) => {
-    if (borrowFormData.quantity > (selectedBook.copies ?? 0)) {
-      toast.error(
-        `Cannot borrow more than available copies. Available: ${selectedBook.copies}`
-      );
+  const handleSubmit = async (
+    borrowFormData: Partial<{ quantity: number; dueDate: string }>
+  ) => {
+    const { quantity, dueDate } = borrowFormData;
+
+    if (typeof quantity !== "number" || !dueDate) {
+      toast.error("Please provide both quantity and due date.");
       return;
     }
 
-    const borrowPayload: Borrow = {
+    if (quantity > (selectedBook.copies ?? 0)) {
+      toast.error(
+        `Cannot borrow more than available copies. Available: ${selectedBook.copies}`
+      );
+      navigate("/");
+      return;
+    }
+
+    const borrowPayload: BorrowPayload = {
       book: selectedBook._id,
-      quantity: borrowFormData.quantity,
-      dueDate: borrowFormData.dueDate,
+      quantity,
+      dueDate,
+      totalQuantity: selectedBook.copies ?? 0,
     };
 
     try {
@@ -46,10 +50,13 @@ const BorrowModalWrapper: FC<Props> = ({ open, onClose, selectedBook }) => {
   return (
     <>
       <BorrowModal
+        onSubmit={handleSubmit}
         open={open}
         onClose={onClose}
-        onSubmit={handleSubmit}
-        data={selectedBook}
+        data={{
+          quantity: 1,
+          dueDate: new Date().toISOString().split("T")[0], // today as default
+        }}
         fields={[
           {
             name: "quantity",
